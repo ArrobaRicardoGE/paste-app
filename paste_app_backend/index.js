@@ -24,12 +24,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "static")));
 
+app.set("view engine", "ejs");
+
 app.get("/", (request, response) => {
-    response.sendFile(path.join(__dirname + "/index.html"));
+    response.render("index");
 });
 
 app.get("/login", (request, response) => {
-    response.sendFile(path.join(__dirname + "/login.html"));
+    response.render("login", { session: request.session });
 });
 
 // http://localhost:3000/auth
