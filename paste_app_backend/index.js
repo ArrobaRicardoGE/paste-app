@@ -2,6 +2,10 @@ const mysql = require("mysql");
 const express = require("express");
 const session = require("express-session");
 const path = require("path");
+const { response } = require("express");
+const { equal } = require("assert");
+const { emit } = require("process");
+const { stat } = require("fs");
 
 const connection = mysql.createConnection({
     host: "localhost",
@@ -31,11 +35,46 @@ app.get("/", (request, response) => {
 });
 
 app.get("/login", (request, response) => {
-    var success = request.query.success;
+    let success = request.query.success;
     if (success == "false") {
         response.render("login", { session: request.session, error: true });
     } else {
         response.render("login", { session: request.session, error: false });
+    }
+});
+
+app.get("/signup", (request, response) => {
+    let status = request.query.status;
+    status = parseInt(status);
+    response.render("signup", { session: request.session, status: status });
+});
+
+app.post("/register", (request, response) => {
+    let username = request.body.username;
+    let email = request.body.email;
+    let password1 = request.body.password1;
+    let password2 = request.body.password2;
+    if (username && email && password1 && password2) {
+        if (password1 != password2) {
+            response.redirect("/signup?status=1");
+            response.end();
+        }
+        connection.query(
+            "INSERT into accounts (username, password, email) VALUES (?, ?, ?)",
+            [username, password1, email],
+            function (error, results, fields) {
+                if (error) {
+                    response.redirect("/signup?status=2");
+                    response.end();
+                    return;
+                }
+                response.redirect("/signup?status=3");
+                response.end();
+            }
+        );
+    } else {
+        response.redirect("/signup?status=0");
+        response.end();
     }
 });
 
@@ -67,7 +106,7 @@ app.post("/auth", function (request, response) {
             }
         );
     } else {
-        response.send("Please enter Username and Password!");
+        response.redirect("/login?success=false");
         response.end();
     }
 });
