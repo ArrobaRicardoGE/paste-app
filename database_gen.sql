@@ -10,3 +10,13 @@ CREATE TABLE IF NOT EXISTS `accounts` (
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 INSERT INTO `accounts` (`id`, `username`, `password`, `email`) VALUES (1, 'test', 'test', 'test@test.com');
+
+CREATE TABLE IF NOT EXISTS `pastes` (
+  `id` varchar(5) NOT NULL UNIQUE,
+  `title` varchar(255) NOT NULL,
+  `owner_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`owner_id`) REFERENCES `accounts`(`id`)
+)   ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `pastes` (`id`, `title`, `owner_id`) VALUES ('abcde', 'test', 1);

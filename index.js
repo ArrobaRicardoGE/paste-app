@@ -52,26 +52,47 @@ app.get("/signup", (request, response) => {
 app.get("/p/:pid", (request, response) => {
     let pid = request.params.pid;
     const filepath = `content/${pid}.txt`;
-    let content = "";
-    try {
-        content = fs.readFileSync(filepath, "utf-8");
-    } catch (error) {
-        // log here perhaps
-        response.render("pasteview", {
-            session: request.session,
-            error: true,
-        });
-        return;
-    }
+    connection.query(
+        "SELECT * FROM `pastes` WHERE `id` = ?",
+        [pid],
+        function (error, results, fields) {
+            if (error) {
+                response.render("pasteview", {
+                    session: request.session,
+                    error: "An unexpected error ocurred.",
+                });
+                return;
+            }
+            if (results.length > 0) {
+                let content = "";
+                try {
+                    content = fs.readFileSync(filepath, "utf-8");
+                } catch (error) {
+                    // log here perhaps
+                    response.render("pasteview", {
+                        session: request.session,
+                        error: "An unexpected error ocurred.",
+                    });
+                    return;
+                }
 
-    const title = "Title";
+                const title = results[0].title;
 
-    response.render("pasteview", {
-        session: request.session,
-        error: false,
-        title: title,
-        content: content,
-    });
+                response.render("pasteview", {
+                    session: request.session,
+                    error: false,
+                    title: title,
+                    content: content,
+                });
+            } else {
+                response.render("pasteview", {
+                    session: request.session,
+                    error: "The paste doesn't exist.",
+                });
+                return;
+            }
+        }
+    );
 });
 
 app.post("/register", (request, response) => {
