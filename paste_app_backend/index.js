@@ -27,11 +27,16 @@ app.use(express.static(path.join(__dirname, "static")));
 app.set("view engine", "ejs");
 
 app.get("/", (request, response) => {
-    response.render("index");
+    response.render("index", { session: request.session });
 });
 
 app.get("/login", (request, response) => {
-    response.render("login", { session: request.session });
+    var success = request.query.success;
+    if (success == "false") {
+        response.render("login", { session: request.session, error: true });
+    } else {
+        response.render("login", { session: request.session, error: false });
+    }
 });
 
 // http://localhost:3000/auth
@@ -54,9 +59,9 @@ app.post("/auth", function (request, response) {
                     request.session.loggedin = true;
                     request.session.username = username;
                     // Redirect to home page
-                    response.redirect("/home");
+                    response.redirect("/");
                 } else {
-                    response.send("Incorrect Username and/or Password!");
+                    response.redirect("/login?success=false");
                 }
                 response.end();
             }
@@ -65,19 +70,6 @@ app.post("/auth", function (request, response) {
         response.send("Please enter Username and Password!");
         response.end();
     }
-});
-
-// http://localhost:3000/home
-app.get("/home", function (request, response) {
-    // If the user is loggedin
-    if (request.session.loggedin) {
-        // Output username
-        response.send("Welcome back, " + request.session.username + "!");
-    } else {
-        // Not logged in
-        response.send("Please login to view this page!");
-    }
-    response.end();
 });
 
 app.listen(3000);
