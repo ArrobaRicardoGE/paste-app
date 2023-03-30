@@ -2,10 +2,8 @@ const mysql = require("mysql");
 const express = require("express");
 const session = require("express-session");
 const path = require("path");
-const { response } = require("express");
-const { equal } = require("assert");
-const { emit } = require("process");
 const fs = require("fs");
+const { response } = require("express");
 
 const connection = mysql.createConnection({
     host: "localhost",
@@ -49,11 +47,19 @@ app.get("/signup", (request, response) => {
     response.render("signup", { session: request.session, status: status });
 });
 
+app.get("/create", (request, response) => {
+    if (!request.session.loggedin) {
+        response.redirect("/");
+        return;
+    }
+    response.render("createpaste", { session: request.session });
+});
+
 app.get("/p/:pid", (request, response) => {
     let pid = request.params.pid;
     const filepath = `content/${pid}.txt`;
     connection.query(
-        "SELECT * FROM `pastes` WHERE `id` = ?",
+        "SELECT * FROM `pastes` WHERE `stringid` = ?",
         [pid],
         function (error, results, fields) {
             if (error) {
@@ -106,7 +112,7 @@ app.post("/register", (request, response) => {
             response.end();
         }
         connection.query(
-            "INSERT into accounts (username, password, email) VALUES (?, ?, ?)",
+            "INSERT INTO accounts (username, password, email) VALUES (?, ?, ?)",
             [username, password1, email],
             function (error, results, fields) {
                 if (error) {
@@ -155,6 +161,37 @@ app.post("/auth", function (request, response) {
         response.redirect("/login?success=false");
         response.end();
     }
+});
+
+app.post("/createpaste", (request, response) => {
+    let title = request.body.title;
+    let content = request.body.content;
+    if (!title || title == "") title = "Untitled";
+
+    connection.query(
+        "INSERT INTO `pastes` (`stringid`, `title`, `owner`) SELECT LEFT(MD5(RAND()), 5), ?, ?",
+        [title, request.session.username],
+        (error, results, fields) => {
+            console.log("in");
+            if (error) {
+                // something
+                console.log(error);
+                return;
+            }
+            connection.query(
+                "SELECT * FROM `pastes` WHERE `id` = ?",
+                [results.insertId],
+                (error, results, fields) => {
+                    fs.writeFileSync(
+                        "content/" + results[0].stringid + ".txt",
+                        content,
+                        { encoding: "utf-8" }
+                    );
+                    response.redirect("/p/" + results[0].stringid);
+                }
+            );
+        }
+    );
 });
 
 app.listen(3000);
