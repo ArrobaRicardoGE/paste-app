@@ -5,7 +5,7 @@ const path = require("path");
 const { response } = require("express");
 const { equal } = require("assert");
 const { emit } = require("process");
-const { stat } = require("fs");
+const fs = require("fs");
 
 const connection = mysql.createConnection({
     host: "localhost",
@@ -47,6 +47,31 @@ app.get("/signup", (request, response) => {
     let status = request.query.status;
     status = parseInt(status);
     response.render("signup", { session: request.session, status: status });
+});
+
+app.get("/p/:pid", (request, response) => {
+    let pid = request.params.pid;
+    const filepath = `content/${pid}.txt`;
+    let content = "";
+    try {
+        content = fs.readFileSync(filepath, "utf-8");
+    } catch (error) {
+        // log here perhaps
+        response.render("pasteview", {
+            session: request.session,
+            error: true,
+        });
+        return;
+    }
+
+    const title = "Title";
+
+    response.render("pasteview", {
+        session: request.session,
+        error: false,
+        title: title,
+        content: content,
+    });
 });
 
 app.post("/register", (request, response) => {

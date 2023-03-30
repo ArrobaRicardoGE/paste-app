@@ -1,0 +1,27 @@
+<%- include('header.ejs') %>
+
+<% if(error) { %>
+    <div class="container-md">
+        <div class="card mt-5">
+            <div class="card-body">
+                <div class="alert alert-danger" role="alert">
+                    En error ocurred.    
+                </div>
+            </div>
+        </div>
+    </div>
+
+<% } else { %>
+
+<div class="container-md">
+    <div class="card mt-5">
+        <div class="card-body">
+            <h5><%= title %></h5>
+            <pre class="card-text"><%= content %></pre>
+        </div>
+    </div>
+</div>
+<% } %>
+
+</body>
+</html>
