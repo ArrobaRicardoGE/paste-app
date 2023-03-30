@@ -15,7 +15,7 @@
     <body>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#">Logo</a>
+                <a class="navbar-brand" href="/">Logo</a>
                 <button
                     class="navbar-toggler"
                     type="button"
@@ -43,10 +43,11 @@
                         </li>
                     </ul>
                     <div class="ms-auto">
+                    <a href="/create"><button class="btn btn-outline-info" type="button">Create Paste</button></a>
                     <% if (!session.loggedin) { %>
                         <a href="/login"><button class="btn btn-outline-success" type="button">Sign up / Log in</button></a>
                     <% } else { %>
-                        <a href="#"><button class="btn btn-outline-light" type="button">Hello, <%= session.username %>!</button></a>
+                        <a href="/mypastes"><button class="btn btn-outline-light" type="button">Hello, <%= session.username %>!</button></a>
                     <% } %>
                     </div>
                 </div>

@@ -4,6 +4,7 @@ const session = require("express-session");
 const path = require("path");
 const fs = require("fs");
 const { response } = require("express");
+const { resolve } = require("path");
 
 const connection = mysql.createConnection({
     host: "localhost",
@@ -49,7 +50,7 @@ app.get("/signup", (request, response) => {
 
 app.get("/create", (request, response) => {
     if (!request.session.loggedin) {
-        response.redirect("/");
+        response.render("reminder", { session: request.session });
         return;
     }
     response.render("createpaste", { session: request.session });
@@ -97,6 +98,31 @@ app.get("/p/:pid", (request, response) => {
                 });
                 return;
             }
+        }
+    );
+});
+
+app.get("/mypastes", (request, response) => {
+    if (!request.session.loggedin) {
+        response.render("reminder", { session: request.session });
+        return;
+    }
+    let pastes = null;
+    connection.query(
+        "SELECT * FROM `pastes` WHERE `owner` = ?",
+        [request.session.username],
+        (error, results, values) => {
+            if (!error) {
+                pastes = results;
+                response.render("mypastes", {
+                    session: request.session,
+                    pastes: pastes,
+                });
+            } else
+                response.render("mypastes", {
+                    session: request.session,
+                    pastes: null,
+                });
         }
     );
 });
@@ -172,7 +198,6 @@ app.post("/createpaste", (request, response) => {
         "INSERT INTO `pastes` (`stringid`, `title`, `owner`) SELECT LEFT(MD5(RAND()), 5), ?, ?",
         [title, request.session.username],
         (error, results, fields) => {
-            console.log("in");
             if (error) {
                 // something
                 console.log(error);
