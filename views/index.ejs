@@ -1,4 +1,48 @@
 <%- include('header.ejs') %>
-    <h1>Hello World!</h1>
-    </body>
-</html>
+<div class="container">
+    <h1 class="text-center mt-5">Welcome to <b>Paste App</b></h1>
+    <div class="row justify-content-center">
+        <div class="col-md-6 mt-5">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title">About Us</h2>
+                    <p class="card-text">Learn about our app and what we do.</p>
+                    <a href="/about" class="btn btn-primary">Learn More</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mt-5">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title">Wiki</h2>
+                    <p class="card-text">Feel lost? Check the Wiki!</p>
+                    <a href="/wiki" class="btn btn-primary">Wiki</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mt-5">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title">Contact Us</h2>
+                    <p class="card-text">Get in touch with us if you have any questions.</p>
+                    <a href="/contact" class="btn btn-primary">Contact Us</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mt-5">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title">Sponsor Us</h2>
+                    <p class="card-text">Help support our mission by sponsoring our work.</p>
+                    <a href="/sponsors" class="btn btn-primary">Become a Sponsor</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="text-center mt-5">
+        <a href="/create"><button class="btn btn-info" type="button">Create Paste</button></a>
+    </div>
+</div>
+
+</body>
+</html> 
