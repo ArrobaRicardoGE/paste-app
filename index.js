@@ -127,6 +127,22 @@ app.get("/mypastes", (request, response) => {
     );
 });
 
+app.get("/about", (request, response) => {
+    response.render("about", { session: request.session });
+});
+
+app.get("/sponsors", (request, response) => {
+    response.render("sponsors", { session: request.session });
+});
+
+app.get("/wiki", (request, response) => {
+    response.render("wiki", { session: request.session });
+});
+
+app.get("/contact", (request, response) => {
+    response.render("contact", { session: request.session });
+});
+
 app.post("/register", (request, response) => {
     let username = request.body.username;
     let email = request.body.email;
