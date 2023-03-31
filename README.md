@@ -17,4 +17,5 @@
 
 ### Application
 
-Run `node index.js` to start the application.
+1. Create a directory called `content` in the root of this application. 
+2. Run `node index.js` to start the application.
