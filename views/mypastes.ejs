@@ -1,12 +1,16 @@
 <%- include('header.ejs') %> 
 
 <div class="container"> 
-    <h1 class="mt-3">My pastes</h1>
-    <ul class="list-group mt-3">
-        <% for (let i = 0; i < pastes.length; i++) { %>
-          <li class="list-group-item"><a href=<%= "/p/" + pastes[i].stringid %>><%= pastes[i].title %></a></li>
-        <% } %>
-    </ul>  
+    <h1 class="text-center mt-5">My <b>pastes</b></h1>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <ul class="list-group mt-3">
+                <% for (let i = 0; i < pastes.length; i++) { %>
+                <li class="list-group-item"><a href=<%= "/p/" + pastes[i].stringid %>><%= pastes[i].title %></a></li>
+                <% } %>
+            </ul>  
+        </div>
+    </div>
 </div>
 
 </body>

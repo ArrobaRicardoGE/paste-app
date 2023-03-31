@@ -3,13 +3,11 @@ const express = require("express");
 const session = require("express-session");
 const path = require("path");
 const fs = require("fs");
-const { response } = require("express");
-const { resolve } = require("path");
 
 const connection = mysql.createConnection({
     host: "localhost",
     user: "upaste",
-    password: "password",
+    password: "password", // Use env variable
     database: "paste_app",
 });
 
@@ -17,7 +15,7 @@ const app = express();
 
 app.use(
     session({
-        secret: "secret",
+        secret: "secret", // Use env variable
         resave: true,
         saveUninitialized: true,
     })
@@ -209,6 +207,7 @@ app.post("/createpaste", (request, response) => {
     let title = request.body.title;
     let content = request.body.content;
     if (!title || title == "") title = "Untitled";
+    if (!content || content == "") content = "(Empty)";
 
     connection.query(
         "INSERT INTO `pastes` (`stringid`, `title`, `owner`) SELECT LEFT(MD5(RAND()), 5), ?, ?",
@@ -217,6 +216,7 @@ app.post("/createpaste", (request, response) => {
             if (error) {
                 // something
                 console.log(error);
+                response.end();
                 return;
             }
             connection.query(
