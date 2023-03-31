@@ -150,6 +150,7 @@ app.post("/register", (request, response) => {
         if (password1 != password2) {
             response.redirect("/signup?status=1");
             response.end();
+            return;
         }
         connection.query(
             "INSERT INTO accounts (username, password, email) VALUES (?, ?, ?)",
