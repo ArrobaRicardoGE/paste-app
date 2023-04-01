@@ -11,11 +11,11 @@
 ### Database
 
 1. Create database as root by running: `mysql -u root -p < database_gen.sql`
-2. Log in as root, and create user "upaste", identified by password "password": `mysql> CREATE USER 'upaste'@'%' IDENTIFIED BY 'password';`
-3. Grant all permissions to the paste_app database to the new user: `mysql> GRANT ALL PRIVILEGES ON paste_app.* TO 'upaste'@'%' WITH GRANT OPTION;`
-4. Flush privileges: `mysql> FLUSH PRIVILEGES;`
+2. When prompted, write root's password
+
+Database should now be ready.
 
 ### Application
 
-1. Create a directory called `content` in the root of this application. 
+1. Create a directory called `content` in the root of this application.
 2. Run `node index.js` to start the application.

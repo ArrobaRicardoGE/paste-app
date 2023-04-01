@@ -19,4 +19,6 @@ CREATE TABLE IF NOT EXISTS `pastes` (
   FOREIGN KEY (`owner`) REFERENCES `accounts`(`username`)
 )   ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `pastes` (`stringid`, `title`, `owner`) VALUES ('abcde', 'test title', 'test');
+CREATE USER 'upaste'@'%' IDENTIFIED WITH mysql_native_password BY 'password';
+GRANT ALL PRIVILEGES ON paste_app.* TO 'upaste'@'%' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
