@@ -14,6 +14,7 @@
 2. When prompted, write root's password
 
 Database should now be ready.
+> Make sure that MySQL is running in port 3306, otherwise, specify on connection in `index.js`
 
 ### Application
 
