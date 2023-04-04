@@ -11,6 +11,22 @@ const connection = mysql.createConnection({
     database: "paste_app",
 });
 
+const logInfo = (request, functionName, message) => {
+    process.stdout.write("Date: " + Date.now().toString() + " ");
+    process.stdout.write("IP: " + request.headers["x-real-ip"] + " ");
+    process.stdout.write("Host " + request.headers["host"] + " ");
+    process.stdout.write("Function: " + functionName + " ");
+    process.stdout.write("Message: " + message + "\n");
+};
+
+const logError = (request, functionName, message) => {
+    process.stderr.write("Date: " + Date.now().toString() + " ");
+    process.stderr.write("IP: " + request.headers["x-real-ip"] + " ");
+    process.stderr.write("Host " + request.headers["host"] + " ");
+    process.stderr.write("Function: " + functionName + " ");
+    process.stderr.write("Message: " + message + "\n");
+};
+
 const app = express();
 
 app.use(
@@ -28,14 +44,17 @@ app.use(express.static(path.join(__dirname, "static")));
 app.set("view engine", "ejs");
 
 app.get("/", (request, response) => {
+    logInfo(request, "index", "1 User");
     response.render("index", { session: request.session });
 });
 
 app.get("/login", (request, response) => {
     let success = request.query.success;
     if (success == "false") {
+        logInfo(request, "login", "unsuccesfull login");
         response.render("login", { session: request.session, error: true });
     } else {
+        logInfo(request, "login", "succesfull login");
         response.render("login", { session: request.session, error: false });
     }
 });
@@ -43,6 +62,7 @@ app.get("/login", (request, response) => {
 app.get("/signup", (request, response) => {
     let status = request.query.status;
     status = parseInt(status);
+    logInfo(request, "signup", "signup request");
     response.render("signup", { session: request.session, status: status });
 });
 
@@ -51,6 +71,7 @@ app.get("/create", (request, response) => {
         response.render("reminder", { session: request.session });
         return;
     }
+    logInfo(request, "create", "new paste created");
     response.render("createpaste", { session: request.session });
 });
 
@@ -90,6 +111,11 @@ app.get("/p/:pid", (request, response) => {
                     content: content,
                 });
             } else {
+                logError(
+                    request,
+                    "pasteview",
+                    `visualizing unexisting paste with pid: ${pid}`
+                );
                 response.render("pasteview", {
                     session: request.session,
                     error: "The paste doesn't exist.",
@@ -116,11 +142,13 @@ app.get("/mypastes", (request, response) => {
                     session: request.session,
                     pastes: pastes,
                 });
-            } else
+            } else {
+                logError(request, "mypastes", "errorVisualizingMyPage");
                 response.render("mypastes", {
                     session: request.session,
-                    pastes: null,
+                    pastes: [],
                 });
+            }
         }
     );
 });
@@ -193,6 +221,11 @@ app.post("/auth", function (request, response) {
                     // Redirect to home page
                     response.redirect("/");
                 } else {
+                    logError(
+                        request,
+                        "auth",
+                        "WrongCredentialsForUser<" + username + ">"
+                    );
                     response.redirect("/login?success=false");
                 }
                 response.end();
