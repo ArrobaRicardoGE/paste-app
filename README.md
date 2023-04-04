@@ -18,5 +18,5 @@ Database should now be ready.
 
 ### Application
 
-1. Create a directory called `content` in the root of this application.
+1. Create directories `content` and `logs` in the root of this application.
 2. Run `node index.js` to start the application.
